@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/mnhqngl/quang-patches/compare/v1.0.1...v1.0.2) (2026-11-03)
+
+### 🐛 Bug Fixes
+
+* open Photos picker directly, bypassing Facebook intent scope filter ([1587f00](https://github.com/mnhqngl/quang-patches/commit/1587f00281172b0b76cdd42ced549a4c91d791bc))
+
 ## [1.0.1](https://github.com/mnhqngl/quang-patches/compare/v1.0.0...v1.0.1) (2026-11-03)
 
 ### 🐛 Bug Fixes
