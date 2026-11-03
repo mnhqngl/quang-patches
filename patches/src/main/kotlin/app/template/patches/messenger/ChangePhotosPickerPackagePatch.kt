@@ -8,9 +8,11 @@ import app.morphe.patcher.patch.ApkFileType
 import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.patch.resourcePatch
 import app.morphe.patcher.patch.stringOption
 import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
+import org.w3c.dom.Element
 
 private val COMPATIBILITY_MESSENGER = Compatibility(
     name = "Messenger",
@@ -86,6 +88,36 @@ val changePhotosPickerPackagePatch = bytecodePatch(
             val register = it.method.getInstruction<OneRegisterInstruction>(index).registerA
 
             it.method.replaceInstruction(index, "const-string v$register, \"$newPackage\"")
+        }
+    }
+}
+
+/**
+ * Messenger tự khai báo <permission app.facebook.permission.prod.FB_APP_COMMUNICATION>
+ * (protectionLevel = signature). Quyền này cũng do app Facebook (com.facebook.katana) khai báo.
+ * APK đã patch được ký bằng khóa khác → Android từ chối cài:
+ *   INSTALL_FAILED_DUPLICATE_PERMISSION ... already owned by com.facebook.katana
+ *
+ * Patch này bỏ các khai báo <permission> không thuộc namespace của chính Messenger.
+ * Các component vẫn giữ android:permission như cũ: Messenger tự gọi component của mình
+ * thì luôn được phép (cùng UID), chỉ app khác ký khóa khác mới bị chặn (vốn đã bị chặn).
+ */
+@Suppress("unused")
+val removeConflictingPermissionsPatch = resourcePatch(
+    name = "Remove conflicting permission declarations",
+    description = "Sửa lỗi INSTALL_FAILED_DUPLICATE_PERMISSION khi máy đã cài app Facebook.",
+    default = true,
+) {
+    compatibleWith(COMPATIBILITY_MESSENGER)
+
+    execute {
+        document("AndroidManifest.xml").use { doc ->
+            val permissions = doc.getElementsByTagName("permission")
+            val toRemove = (0 until permissions.length)
+                .map { permissions.item(it) as Element }
+                .filter { !it.getAttribute("android:name").startsWith("com.facebook.orca") }
+
+            toRemove.forEach { it.parentNode.removeChild(it) }
         }
     }
 }
