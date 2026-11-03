@@ -14,7 +14,7 @@ import app.morphe.patcher.string
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import org.w3c.dom.Element
 
-private val COMPATIBILITY_MESSENGER = Compatibility(
+internal val COMPATIBILITY_MESSENGER = Compatibility(
     name = "Messenger",
     packageName = "com.facebook.orca",
     apkFileType = ApkFileType.APK,
