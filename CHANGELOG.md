@@ -1,3 +1,9 @@
+## [1.0.3](https://github.com/mnhqngl/quang-patches/compare/v1.0.2...v1.0.3) (2026-11-03)
+
+### 🐛 Bug Fixes
+
+* also bypass intent filter for new composer external media picker event ([6067e05](https://github.com/mnhqngl/quang-patches/commit/6067e059c602c0a00fe4572f34024bdf76e63ce8))
+
 ## [1.0.2](https://github.com/mnhqngl/quang-patches/compare/v1.0.1...v1.0.2) (2026-11-03)
 
 ### 🐛 Bug Fixes
